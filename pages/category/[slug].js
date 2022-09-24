@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
-import Header from "../components/header";
+import Header from "../../components/header";
 import Box from "@material-ui/core/Box";
 import CardMedia from "@material-ui/core/CardMedia";
 import Card from "@material-ui/core/Card";
@@ -36,16 +36,20 @@ function Home({ posts, categories }) {
       <main>
         <Container className={classes.cardGrid} maxWidth="lg">
           <Grid container spacing={2}>
+            {console.log(posts)}
             {posts.map((post) => (
-              <Link key={post.id} href={`product/${encodeURIComponent(post.slug)}`}>
+              <Link
+                key={post.id}
+                href={`/product/${encodeURIComponent(post.slug)}`}
+              >
                 <Grid item xs={6} sm={4} md={3}>
                   <Card className={classes.card} elevation={0}>
-                  <CardMedia
-                        className={classes.cardMedia}
-                        image={post.product_image[0].image}
-                        title="Image title"
-                        alt={post.product_image[0].alt_text}
-                      />
+                    <CardMedia
+                      className={classes.cardMedia}
+                      image={post.product_image[0].image}
+                      title="Image title"
+                      alt={post.product_image[0].alt_text}
+                    />
                     <CardContent>
                       <Typography gutterBottom component="p">
                         {post.title}
@@ -65,13 +69,13 @@ function Home({ posts, categories }) {
   );
 }
 
-export async function getServerSideProps() {
-  const res = await fetch("http://127.0.0.1:8000/api/");
+export async function getServerSideProps({ params }) {
+  const res = await fetch(`http://127.0.0.1:8000/api/category/${params.slug}`);
   const posts = await res.json();
 
   const ress = await fetch("http://127.0.0.1:8000/api/category/");
   const categories = await ress.json();
-  
+
   return {
     props: {
       posts,

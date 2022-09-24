@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#525050",
     color: "#fff",
   },
+
   appbarPromotion: {
     backgroundColor: "#2d2d2d",
     color: "#fff",
@@ -74,7 +75,7 @@ export default function Header({data}) {
 
   return (
     <nav>
-      <AppBar
+      {/* <AppBar
         position="relative"
         elevation={0}
         className={classes.appbarDesktop}
@@ -82,7 +83,7 @@ export default function Header({data}) {
         <Container maxWidth="lg">
           <Toolbar className={classes.toolbarDesktop}></Toolbar>
         </Container>
-      </AppBar>
+      </AppBar> */}
       <AppBar position="static" elevation={0} className={classes.appbarMain}>
       <Container maxWidth="lg">
         <Toolbar className={classes.toolbarMain}>
@@ -105,7 +106,7 @@ export default function Header({data}) {
         </Toolbar>
         </Container>
       </AppBar>
-      {/* <AppBar
+      <AppBar
         position="relative"
         elevation={0}
         className={classes.appbarSecondary}
@@ -121,7 +122,7 @@ export default function Header({data}) {
             </List>
           </Toolbar>
         </Container>
-      </AppBar> */}
+      </AppBar>
       {/* <AppBar
         position="relative"
         elevation={0}
