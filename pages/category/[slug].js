@@ -8,6 +8,7 @@ import Link from "next/link";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
+import { useContext } from "react";
 
 const useStyles = makeStyles((theme) => ({
   example: {
@@ -75,6 +76,7 @@ export async function getServerSideProps({ params }) {
 
   const ress = await fetch("http://127.0.0.1:8000/api/category/");
   const categories = await ress.json();
+
 
   return {
     props: {
