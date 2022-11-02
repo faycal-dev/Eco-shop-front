@@ -25,19 +25,19 @@ export const CustumInput = styled.input`
 
   &:active {
     outline: none;
-    border: 2px solid ${colors.primary2};
+    border: 1px solid ${colors.primary2};
     
   }
   &:focus {
     outline: none;
-    border: 2px solid ${colors.primary2};
+    border: 1px solid ${colors.primary2};
   }
 `;
 
 export const InputButton = styled.div`
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
-  width: 5%;
+  width: 60px;
   height: 100%;
   background-color: ${colors.primary2};
   color: ${colors.white};

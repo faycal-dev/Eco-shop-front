@@ -36,7 +36,7 @@ export default async (req, res) => {
                             secure: process.env.NODE_ENV !== 'development',
                             maxAge: 60 * 30,
                             sameSite: 'strict',
-                            path: '/api/'
+                            path: '/'
                         }
                     ),
                     cookie.serialize(
@@ -45,7 +45,7 @@ export default async (req, res) => {
                             secure: process.env.NODE_ENV !== 'development',
                             maxAge: 60 * 60 * 24,
                             sameSite: 'strict',
-                            path: '/api/'
+                            path: '/'
                         }
                     )
                 ]);
@@ -54,7 +54,6 @@ export default async (req, res) => {
                     success: 'Refresh request successful'
                 });
             } else {
-                console.log("marfoud")
                 return res.status(apiRes.status).json({
                     error: 'Failed to fulfill refresh request'
                 });

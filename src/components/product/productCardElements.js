@@ -92,6 +92,7 @@ export const CardWishlistButton = styled.div`
   border-width: 0;
   cursor: pointer;
 
+
   &:hover {
     opacity: 80%;
   }

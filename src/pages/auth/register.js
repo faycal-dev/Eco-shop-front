@@ -98,7 +98,7 @@ const RegisterPage = () => {
   if (typeof window !== "undefined" && isAuthenticated)
     router.push("/products");
 
-  if (register_success && !isAuthenticated) router.push("./login");
+  if (register_success && !isAuthenticated) router.push("/login");
 
   return (
     <Container style={{ maxHeight: "100vh" }}>

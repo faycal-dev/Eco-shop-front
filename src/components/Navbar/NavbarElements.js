@@ -13,7 +13,6 @@ export const Nav = styled.nav`
   background: ${colors.white};
   box-shadow: 1px 3px 5px ${colors.greyFade2};
 
-
   @media screen and (max-width: 960px) {
     transition: 0.8s all ease;
   }
@@ -42,7 +41,7 @@ export const NavLogo = styled.a`
   color: ${colors.primary2};
 
   &:hover {
-    transition: 0.5s all ease-in-out;
+    transition: 0.1s all ease-in-out;
     transform: scale(1.05);
     color: ${colors.primary2};
   }
@@ -83,13 +82,14 @@ export const NavItem = styled.li`
 
 export const NavLinks = styled.a`
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   text-decoration: none;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
   min-height: 65px;
   font-weight: 600;
-  padding-bottom: 1.2rem;
-  justify-content: center;
+  padding-bottom: 0.3rem;
+  justify-content: flex-end;
+  flex-direction: column;
 
   cursor: pointer;
   border-bottom: ${({ isActive }) =>
@@ -100,7 +100,7 @@ export const NavLinks = styled.a`
     border-bottom: 3px solid ${colors.primary2};
   }
   &:hover {
-    transition: 0.5s all ease-in-out;
+    transition: 0.1s all ease-in-out;
     color: ${colors.primary2};
     transform: scale(1.05);
   }
@@ -175,11 +175,13 @@ export const NavBtn = styled.nav`
 
 export const NavBtnLink = styled.a`
   border-radius: 5px;
-  background: ${colors.danger};
+  background: ${({ loggedIn }) => (loggedIn ? colors.danger : colors.primary2)};
   white-space: nowrap;
   padding: 6px 13px;
   color: ${colors.white};
-  border: 2px solid ${colors.danger};
+  border: ${({ loggedIn }) =>
+    loggedIn ? `2px solid ${colors.danger}` : `2px solid ${colors.primary2}`};
+
   font-size: 16px;
   outline: none;
   cursor: pointer;
@@ -188,7 +190,7 @@ export const NavBtnLink = styled.a`
 
   &:hover {
     transition: all 0.2s ease-in-out;
-    color: ${colors.danger};
+    color: ${({ loggedIn }) => (loggedIn ? colors.danger : colors.primary2)};
     background: ${colors.white};
   }
 `;

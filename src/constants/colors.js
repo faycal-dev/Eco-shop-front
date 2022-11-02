@@ -11,7 +11,7 @@ export default {
   silver: "#C0C0C0",
   success: "#5cb85c",
   successFade: "rgba(0,100,0,0.2)",
-  whiteSmoke: "#F3E5F5",
+  whiteSmoke: "#F5F5F5",
   white: "#FFF",
   dark: "#616161",
   greyDark: "#686D76"

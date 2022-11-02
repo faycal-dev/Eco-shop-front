@@ -33,7 +33,7 @@ const Layout = ({ title, content, children }) => {
       </Head>
       <Navbar toggle={toggle} />
       <SideBar isOpen={isOpen} toggle={toggle} />
-      <div className="container mt-3">{children}</div>
+      <div className="mt-3">{children}</div>
     </div>
   );
 };

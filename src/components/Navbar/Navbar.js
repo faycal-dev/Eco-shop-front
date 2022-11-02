@@ -1,12 +1,13 @@
-import { useState } from "react";
 import {
   List,
   Heart,
   ShoppingCart,
   CreditCard,
+  ShoppingBag,
   Bell,
   Clock,
 } from "react-feather";
+import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import { logout } from "../../actions/auth";
@@ -29,16 +30,21 @@ import {
   NavBtnLink,
 } from "./NavbarElements";
 
-
 const Navbar = ({ toggle }) => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
   // const [isOpen, setIsOpen] = useState(false);
   // const [selectedOption, setSelectedOption] = useState(null);
 
   const logoutHandler = () => {
     if (dispatch && dispatch !== null && dispatch !== undefined)
       dispatch(logout());
+  };
+
+  const loginHandler = () => {
+    router.push("auth/login");
   };
 
   // const toggling = () => setIsOpen(!isOpen);
@@ -63,27 +69,27 @@ const Navbar = ({ toggle }) => {
             <NavItem>
               <Link href="/products">
                 <NavLinks isActive={router.pathname === "/products"}>
-                  <ShoppingCart size={20} style={{ marginRight: 5 }} />
+                  <ShoppingBag size={20} style={{ marginRight: 5 }} />
                   Shop
                 </NavLinks>
               </Link>
             </NavItem>
             <NavItem>
-              <Link href="#deets">
-                <NavLinks isActive={router.pathname === "/wishList"}>
+              <Link href="/wishlist">
+                <NavLinks isActive={router.pathname === "/wishlist"}>
                   <Heart size={20} style={{ marginRight: 5 }} /> WishList
                 </NavLinks>
               </Link>
             </NavItem>
             <NavItem>
-              <Link href="#deets">
-                <NavLinks isActive={router.pathname === "/checkout"}>
-                  <CreditCard size={20} style={{ marginRight: 5 }} /> Checkout
+              <Link href="/cart">
+                <NavLinks isActive={router.pathname === "/cart"}>
+                  <ShoppingCart size={20} style={{ marginRight: 5 }} /> Cart
                 </NavLinks>
               </Link>
             </NavItem>
             <NavItem>
-              <Link href="#deets">
+              <Link href="/notifications">
                 <NavLinks isActive={router.pathname === "/notifications"}>
                   <Bell size={20} style={{ marginRight: 5 }} />
                   Notifications
@@ -91,8 +97,8 @@ const Navbar = ({ toggle }) => {
               </Link>
             </NavItem>
             <NavItem>
-              <Link href="#deets">
-                <NavLinks isActive={router.pathname === "/history"}>
+              <Link href="/orders">
+                <NavLinks isActive={router.pathname === "/orders"}>
                   <Clock size={20} style={{ marginRight: 5 }} /> Orders
                 </NavLinks>
               </Link>
@@ -117,7 +123,15 @@ const Navbar = ({ toggle }) => {
             </DropDownContainer> */}
           </NavMenu>
           <NavBtn>
-            <NavBtnLink onClick={logoutHandler}>Logout</NavBtnLink>
+            {isAuthenticated ? (
+              <NavBtnLink loggedIn={isAuthenticated} onClick={logoutHandler}>
+                Logout
+              </NavBtnLink>
+            ) : (
+              <NavBtnLink loggedIn={isAuthenticated} onClick={loginHandler}>
+                Login
+              </NavBtnLink>
+            )}
           </NavBtn>
         </NavbarContainer>
       </Nav>

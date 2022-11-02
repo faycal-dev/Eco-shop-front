@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import SplashImage from "../../public/home_screen.png";
 import logo from "../../public/logo.png";
 import colors from "../constants/colors";
+import { runFireWorks } from "../components/confetti/schoolPride";
 
 export default function Home() {
   const [windowSize, setWindowSize] = useState({});
@@ -24,6 +25,7 @@ export default function Home() {
       setWindowSize(getWindowSize());
     }
     window.addEventListener("resize", handleWindowResize);
+    runFireWorks();
 
     return () => {
       window.removeEventListener("resize", handleWindowResize);

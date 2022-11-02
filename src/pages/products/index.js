@@ -12,12 +12,15 @@ import "react-perfect-scrollbar/dist/css/styles.css";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { API_URL } from "../../config";
 import { Input } from "../../components/input/Input";
+import CustomPagination from "../../components/pagination/pagination";
 
-export default function Index({ products }) {
+export default function Index({ products, pagination }) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [priceRange, setPriceRange] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
   const [productsData, setProductsData] = useState(products);
+  const [page, setPage] = useState(pagination);
   const [ratingStars, setRatingStars] = useState(0);
   const [searchText, setSearchText] = useState("");
   const [brands, setBrands] = useState([]);
@@ -30,7 +33,7 @@ export default function Index({ products }) {
     success: false,
   });
 
-  //   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   //   const loading = useSelector((state) => state.auth.loading);
 
   const onSetSidebarOpen = (open) => {
@@ -41,6 +44,26 @@ export default function Index({ products }) {
     const media = window.matchMedia(`(min-width: 900px)`);
     return media;
   }
+
+  const getWishlist = async () => {
+    try {
+      const res = await fetch("api/shop/wishlist", {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+      const data = await res.json();
+
+      setWishlist(data.wishlist);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      getWishlist();
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     setMql(getWindowSize());
@@ -101,7 +124,14 @@ export default function Index({ products }) {
       const res = await fetch(`${API_URL}/api/category/${slug}`);
       const posts = await res.json();
       if (res.status === 200) {
-        setProductsData(posts);
+        setProductsData(posts.results);
+        const paginationData = {
+          current: 1,
+          previous: posts.previous,
+          next: posts.next,
+          last: posts.count,
+        };
+        setPage(paginationData);
       } else {
         setAlert({
           title: "Category filter failed",
@@ -141,8 +171,129 @@ export default function Index({ products }) {
     setSearchText(e.target.value);
   };
 
-  const SearchProducts = () => {
-    console.log(searchText);
+  const SearchProducts = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api?search=${searchText}`);
+      const posts = await res.json();
+      if (res.status === 200) {
+        setProductsData(posts.results);
+        const paginationData = {
+          current: 1,
+          previous: posts.previous,
+          next: posts.next,
+          last: posts.count,
+        };
+        setPage(paginationData);
+      } else {
+        setAlert({
+          title: "Search failed",
+          body: posts.detail,
+          show: true,
+          success: false,
+        });
+      }
+    } catch (error) {
+      setAlert({
+        title: "Search failed",
+        body: error.message,
+        show: true,
+        success: false,
+      });
+    }
+  };
+
+  const handleGoPageNumber = async (to) => {
+    try {
+      const res = null;
+      const paginationData = {};
+      switch (to) {
+        case "first":
+          res = await fetch(`${API_URL}/api?page=1`);
+          paginationData = {
+            current: 1,
+          };
+          break;
+        case "next":
+          res = await fetch(`${page.next}`);
+          paginationData = {
+            current: page.current + 1,
+          };
+          break;
+        case "previous":
+          res = await fetch(`${page.previous}`);
+          paginationData = {
+            current: page.current - 1,
+          };
+          break;
+        case "last":
+          res = await fetch(`${page.next}`);
+          paginationData = {
+            current: page.current + 1,
+          };
+          break;
+
+        default:
+          break;
+      }
+
+      const posts = await res.json();
+      paginationData = {
+        ...paginationData,
+        previous: posts.previous,
+        next: posts.next,
+        last: posts.count,
+      };
+      if (res.status === 200) {
+        setProductsData(posts.results);
+        setPage(paginationData);
+      } else {
+        setAlert({
+          title: "Pagination failed",
+          body: posts.detail,
+          show: true,
+          success: false,
+        });
+      }
+    } catch (error) {
+      setAlert({
+        title: "Pagination failed",
+        body: error.message,
+        show: true,
+        success: false,
+      });
+    }
+  };
+
+  const handleAddWishlist = async (id) => {
+    if (!isAuthenticated) {
+      router.push("/auth/login");
+    } else {
+      try {
+        const body = JSON.stringify({ id: id });
+        const res = await fetch("api/shop/toggle_product_to_wishlist", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+          },
+          body: body,
+        });
+        const data = await res.json();
+        getWishlist();
+        setAlert({
+          title: "Success",
+          body: data.success,
+          show: true,
+          success: true,
+        });
+      } catch (error) {
+        setAlert({
+          title: "Failed to modify the wishlist",
+          body: error,
+          show: true,
+          success: false,
+        });
+      }
+    }
   };
 
   // in case you want to secure the shop page by giving access to only authenticated users
@@ -186,7 +337,15 @@ export default function Index({ products }) {
         >
           <div id="content">
             <Row className="mx-4 my-3">
-              <h6 style={{color:colors.dark, fontSize:"1rem", fontWeight:400}}>Found {data.length} products</h6>
+              <h6
+                style={{
+                  color: colors.dark,
+                  fontSize: "1rem",
+                  fontWeight: 400,
+                }}
+              >
+                Found {data.length} products
+              </h6>
               <Input
                 type="text"
                 name="Search"
@@ -199,10 +358,21 @@ export default function Index({ products }) {
             <Row className="mx-3 my-3">
               {data.map((product) => (
                 <Col xs="12" sm="6" md="6" lg="4" xl="3" className="my-3">
-                  <ProductCard product={product} />
+                  <ProductCard
+                    product={product}
+                    addWishlist={() => handleAddWishlist(product.id)}
+                    viewInCart={() => {}}
+                    isInWishList={wishlist.some((el) => el.id === product.id)}
+                    remouveTag={false}
+                  />
                 </Col>
               ))}
             </Row>
+            <CustomPagination
+              goPageNumber={handleGoPageNumber}
+              currentPage={page.current}
+              next={page.next}
+            />
           </div>
         </PerfectScrollbar>
       </Sidebar>
@@ -224,55 +394,39 @@ export default function Index({ products }) {
         <p className="sweet-alert-text">{alert.body}</p>
       </SweetAlert>
     </Layout>
-    //   {/* <Header data={categories} />
-    //   <main>
-    //     <Container className={classes.cardGrid} maxWidth="lg">
-    //       <Grid container spacing={2}>
-    //         {posts.map((post) => (
-    //           <Link
-    //             key={post.id}
-    //             href={`product/${encodeURIComponent(post.slug)}`}
-    //           >
-    //             <Grid item xs={6} sm={4} md={3}>
-    //               <Card className={classes.card} elevation={0}>
-    //                 <CardMedia
-    //                   className={classes.cardMedia}
-    //                   image={post.product_image[0].image}
-    //                   title="Image title"
-    //                   alt={post.product_image[0].alt_text}
-    //                 />
-    //                 <CardContent>
-    //                   <Typography gutterBottom component="p">
-    //                     {post.title}
-    //                   </Typography>
-    //                   <Box component="p" fontSize={16} fontWeight={900}>
-    //                     {post.regular_price} DA
-    //                   </Box>
-    //                 </CardContent>
-    //               </Card>
-    //             </Grid>
-    //           </Link>
-    //         ))}
-    //       </Grid>
-    //     </Container>
-    //   </main> */}
+
   );
 }
 
 export async function getServerSideProps() {
   try {
     const response = await fetch(`${API_URL}/api/`);
-    const products = await response.json();
+    const res = await response.json();
+    const pagination = {
+      current: 1,
+      previous: res.previous,
+      next: res.next,
+      last: res.count,
+    };
+    const products = res.results;
     return {
       props: {
         products,
+        pagination,
       },
     };
   } catch (error) {
     const products = [];
+    const pagination = {
+      current: 1,
+      previous: null,
+      next: "",
+      last: 1,
+    };
     return {
       props: {
         products,
+        pagination,
       },
     };
   }

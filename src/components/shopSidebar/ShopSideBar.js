@@ -19,7 +19,7 @@ function ShopSideBar(props) {
     try {
       const res = await fetch(`${API_URL}/api/category/`);
       const categorie = await res.json();
-      setCategories(categorie);
+      setCategories(categorie.results);
     } catch (error) {
       console.log(error);
     }
@@ -28,7 +28,7 @@ function ShopSideBar(props) {
     try {
       const res = await fetch(`${API_URL}/api/brands/`);
       const apiResponse = await res.json();
-      apiResponse = [...new Set(apiResponse.map((item) => item.brand))];
+      apiResponse = [...new Set(apiResponse.results.map((item) => item.brand))];
       setBrands(apiResponse);
     } catch (error) {
       console.log(error);
@@ -129,6 +129,7 @@ function ShopSideBar(props) {
               <Star
                 size={23}
                 color={ratingStars >= 1 ? colors.warning : colors.silver}
+                fill={ratingStars >= 1 ? colors.warning : colors.silver}
                 onClick={() => {
                   setRatingStars(1);
                   props.onRatingStarsChange(1);
@@ -138,6 +139,7 @@ function ShopSideBar(props) {
               <Star
                 size={23}
                 color={ratingStars >= 2 ? colors.warning : colors.silver}
+                fill={ratingStars >= 2 ? colors.warning : colors.silver}
                 onClick={() => {
                   setRatingStars(2);
                   props.onRatingStarsChange(2);
@@ -147,6 +149,7 @@ function ShopSideBar(props) {
               <Star
                 size={23}
                 color={ratingStars >= 3 ? colors.warning : colors.silver}
+                fill={ratingStars >= 3 ? colors.warning : colors.silver}
                 onClick={() => {
                   setRatingStars(3);
                   props.onRatingStarsChange(3);
@@ -156,6 +159,7 @@ function ShopSideBar(props) {
               <Star
                 size={23}
                 color={ratingStars >= 4 ? colors.warning : colors.silver}
+                fill={ratingStars >= 4 ? colors.warning : colors.silver}
                 onClick={() => {
                   setRatingStars(4);
                   props.onRatingStarsChange(4);
@@ -165,6 +169,7 @@ function ShopSideBar(props) {
               <Star
                 size={23}
                 color={ratingStars == 5 ? colors.warning : colors.silver}
+                fill={ratingStars == 5 ? colors.warning : colors.silver}
                 onClick={() => {
                   setRatingStars(5);
                   props.onRatingStarsChange(5);
