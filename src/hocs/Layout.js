@@ -4,7 +4,7 @@ import { check_auth_status } from "../actions/auth";
 import Head from "next/head";
 import Navbar from "../components/Navbar/Navbar";
 import SideBar from "../components/SideBare/SideBar";
-import colors from "../constants/colors";
+import styled from "styled-components";
 
 const Layout = ({ title, content, children }) => {
   const dispatch = useDispatch();
@@ -21,9 +21,8 @@ const Layout = ({ title, content, children }) => {
 
   return (
     <div
-      
       style={{
-        backgroundColor:"#F5F5F5",
+        backgroundColor: "#f6f9fc",
         minHeight: "100vh",
       }}
     >
@@ -33,7 +32,7 @@ const Layout = ({ title, content, children }) => {
       </Head>
       <Navbar toggle={toggle} />
       <SideBar isOpen={isOpen} toggle={toggle} />
-      <div className="mt-3">{children}</div>
+      <div className="mt-3 pb-4">{children}</div>
     </div>
   );
 };

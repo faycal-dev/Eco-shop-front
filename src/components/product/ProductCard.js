@@ -9,12 +9,14 @@ import {
   CardWishlistButton,
   CardCartButton,
   CardStatWrapper,
+  WishlistButtonContainer,
   LinkText,
 } from "./productCardElements";
 import { Heart, ShoppingCart, Star, X } from "react-feather";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import colors from "../../constants/colors";
+import { Spinner } from "react-bootstrap";
 
 function ProductCard({
   product,
@@ -22,6 +24,8 @@ function ProductCard({
   viewInCart,
   isInWishList,
   remouveTag,
+  isWishlistLoading,
+  isCartLoading,
 }) {
   const router = useRouter();
 
@@ -73,25 +77,69 @@ function ProductCard({
       </CardTitleWrapper>
       <CardStatWrapper>
         {!remouveTag ? (
-          <CardWishlistButton onClick={addWishlist}>
-            <Heart
-              size={18}
-              color={isInWishList ? colors.danger : colors.greyDark}
-              fill={isInWishList ? colors.danger : "transparent"}
-              style={{ marginRight: 10 }}
-            />
-            <LinkText> WishList</LinkText>
-          </CardWishlistButton>
+          <WishlistButtonContainer>
+            {isWishlistLoading ? (
+              <CardWishlistButton onClick={addWishlist}>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="lg"
+                  role="status"
+                  aria-hidden="true"
+                />
+              </CardWishlistButton>
+            ) : (
+              <CardWishlistButton onClick={addWishlist}>
+                <Heart
+                  size={18}
+                  color={isInWishList ? colors.danger : colors.greyDark}
+                  fill={isInWishList ? colors.danger : "transparent"}
+                  style={{ marginRight: 10 }}
+                />
+                <LinkText>WishList</LinkText>
+              </CardWishlistButton>
+            )}
+          </WishlistButtonContainer>
         ) : (
-          <CardWishlistButton onClick={addWishlist}>
-            <X size={18} color={colors.greyDark} style={{ marginRight: 10 }} />
-            <LinkText>Remove</LinkText>
-          </CardWishlistButton>
+          <WishlistButtonContainer>
+            {isWishlistLoading ? (
+              <CardWishlistButton onClick={addWishlist}>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="lg"
+                  role="status"
+                  aria-hidden="true"
+                />
+              </CardWishlistButton>
+            ) : (
+              <CardWishlistButton onClick={addWishlist}>
+                <X
+                  size={18}
+                  color={colors.greyDark}
+                  style={{ marginRight: 10 }}
+                />
+                <LinkText>Remove</LinkText>
+              </CardWishlistButton>
+            )}
+          </WishlistButtonContainer>
         )}
-        <CardCartButton onClick={viewInCart}>
-          <ShoppingCart size={18} style={{ marginRight: 10 }} />
-          <LinkText> View in cart</LinkText>
-        </CardCartButton>
+        {isCartLoading ? (
+          <CardCartButton>
+            <Spinner
+              as="span"
+              animation="border"
+              size="lg"
+              role="status"
+              aria-hidden="true"
+            />
+          </CardCartButton>
+        ) : (
+          <CardCartButton onClick={viewInCart}>
+            <ShoppingCart size={18} style={{ marginRight: 10 }} />
+            <LinkText>Move to cart</LinkText>
+          </CardCartButton>
+        )}
       </CardStatWrapper>
     </CardWrapper>
   );

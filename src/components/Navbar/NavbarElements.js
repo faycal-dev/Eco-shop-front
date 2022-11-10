@@ -96,9 +96,7 @@ export const NavLinks = styled.a`
     isActive ? "3px solid " + colors.primary2 : ""};
   color: ${({ isActive }) => (isActive ? colors.primary2 : colors.dark)};
 
-  &:active {
-    border-bottom: 3px solid ${colors.primary2};
-  }
+
   &:hover {
     transition: 0.1s all ease-in-out;
     color: ${colors.primary2};

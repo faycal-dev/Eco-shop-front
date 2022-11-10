@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import jwt_decode from "jwt-decode";
 
 export default async function middleware(req) {
-  // const cookies = req.cookies.cookies
+  // const cookies = req.cookies["access"]
   // console.log(cookies);
   // const access = cookies.refresh ?? false;
   // const url = req.url;

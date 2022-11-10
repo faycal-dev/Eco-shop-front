@@ -32,7 +32,11 @@ export default function Index({ products, pagination }) {
     show: false,
     success: false,
   });
-
+  const [isLoading, setIsLoading] = useState({
+    state: false,
+    id: null,
+    button: null,
+  });
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   //   const loading = useSelector((state) => state.auth.loading);
 
@@ -173,6 +177,7 @@ export default function Index({ products, pagination }) {
 
   const SearchProducts = async () => {
     try {
+      setIsLoading({ state: true, id: null, button: "search" });
       const res = await fetch(`${API_URL}/api?search=${searchText}`);
       const posts = await res.json();
       if (res.status === 200) {
@@ -192,7 +197,10 @@ export default function Index({ products, pagination }) {
           success: false,
         });
       }
+      setIsLoading({ state: false, id: null, button: null });
     } catch (error) {
+      setIsLoading({ state: false, id: null, button: null });
+
       setAlert({
         title: "Search failed",
         body: error.message,
@@ -269,6 +277,8 @@ export default function Index({ products, pagination }) {
       router.push("/auth/login");
     } else {
       try {
+        setIsLoading({ state: true, id: id, button: "wish" });
+
         const body = JSON.stringify({ id: id });
         const res = await fetch("api/shop/toggle_product_to_wishlist", {
           method: "POST",
@@ -278,6 +288,7 @@ export default function Index({ products, pagination }) {
           body: body,
         });
         const data = await res.json();
+        setIsLoading({ state: false, id: null, button: null });
         getWishlist();
         setAlert({
           title: "Success",
@@ -286,9 +297,46 @@ export default function Index({ products, pagination }) {
           success: true,
         });
       } catch (error) {
+        setIsLoading({ state: false, id: null, button: null });
         setAlert({
           title: "Failed to modify the wishlist",
           body: error,
+          show: true,
+          success: false,
+        });
+      }
+    }
+  };
+
+  const handleAddToCart = async (id) => {
+    if (!isAuthenticated) {
+      router.push("/auth/login");
+    } else {
+      try {
+        setIsLoading({ state: true, id: id, button: "cart" });
+        const body = JSON.stringify({ id: id });
+        const res = await fetch("api/shop/add_to_cart", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+          },
+          body: body,
+        });
+        const data = await res.json();
+        setIsLoading({ state: false, id: null, button: null });
+
+        setAlert({
+          title: "Success",
+          body: data.success,
+          show: true,
+          success: true,
+        });
+      } catch (error) {
+        setIsLoading({ state: false, id: null, button: null });
+
+        setAlert({
+          title: "Failed to modify the cart",
+          body: "",
           show: true,
           success: false,
         });
@@ -347,6 +395,9 @@ export default function Index({ products, pagination }) {
                 Found {data.length} products
               </h6>
               <Input
+                isLoading={
+                  isLoading.button === "search" && isLoading.state === true
+                }
                 type="text"
                 name="Search"
                 placeholder="Search"
@@ -357,13 +408,23 @@ export default function Index({ products, pagination }) {
             </Row>
             <Row className="mx-3 my-3">
               {data.map((product) => (
-                <Col xs="12" sm="6" md="6" lg="4" xl="3" className="my-3">
+                <Col key={product.id} xs="12" sm="6" md="6" lg="4" xl="3" className="my-3">
                   <ProductCard
                     product={product}
                     addWishlist={() => handleAddWishlist(product.id)}
-                    viewInCart={() => {}}
-                    isInWishList={wishlist.some((el) => el.id === product.id)}
+                    viewInCart={() => handleAddToCart(product.id)}
+                    isInWishList={wishlist?.some((el) => el.id === product.id)}
                     remouveTag={false}
+                    isWishlistLoading={
+                      isLoading.id === product.id &&
+                      isLoading.button === "wish" &&
+                      isLoading.state === true
+                    }
+                    isCartLoading={
+                      isLoading.id === product.id &&
+                      isLoading.button === "cart" &&
+                      isLoading.state === true
+                    }
                   />
                 </Col>
               ))}
@@ -394,7 +455,6 @@ export default function Index({ products, pagination }) {
         <p className="sweet-alert-text">{alert.body}</p>
       </SweetAlert>
     </Layout>
-
   );
 }
 

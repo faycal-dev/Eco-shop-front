@@ -28,8 +28,7 @@ function ShopSideBar(props) {
     try {
       const res = await fetch(`${API_URL}/api/brands/`);
       const apiResponse = await res.json();
-      apiResponse = [...new Set(apiResponse.results.map((item) => item.brand))];
-      setBrands(apiResponse);
+      setBrands(apiResponse.results);
     } catch (error) {
       console.log(error);
     }
@@ -83,7 +82,7 @@ function ShopSideBar(props) {
             </div>
             <ul className="list-unstyled mt-3">
               {categories.map((category) => (
-                <li id={category.slug}>
+                <li key={category.slug}>
                   <Radio
                     label={category.name}
                     value={category.slug}
@@ -105,13 +104,13 @@ function ShopSideBar(props) {
             <ul className="list-unstyled ">
               {brands.map((brand) => (
                 <li
-                  id={brand}
+                  key={brand.brand}
                   className="d-flex justify-content-between align-items-center py-25"
                 >
                   <Checkbox
                     icon={<Check className="vx-icon" size={16} />}
-                    label={brand}
-                    value={brand}
+                    label={brand.brand}
+                    value={brand.brand}
                     defaultChecked={false}
                     onClick={props.onBrandChange}
                   />

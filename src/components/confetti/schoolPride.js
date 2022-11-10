@@ -1,7 +1,7 @@
 import confetti from "canvas-confetti";
 
 export const runFireWorks = () => {
-  var end = Date.now() + 3 * 1000;
+  var end = Date.now() + 1 * 1000;
 
   // go Buckeyes!
   var colors = ["#8758FF", "#ffffff"];

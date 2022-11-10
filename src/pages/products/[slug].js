@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { API_URL } from "../../config";
 import Layout from "../../hocs/Layout";
-import { Row, Col, Container } from "react-bootstrap";
+import { Row, Col, Container, Spinner } from "react-bootstrap";
 import colors from "../../constants/colors";
 import { Star, Heart, ShoppingCart, Award, Clock, Shield } from "react-feather";
 import styled from "styled-components";
@@ -70,6 +70,8 @@ function Product({ product, isInWishList }) {
     product.product_image[0].image
   );
   const [IsInWishList, setIsInWishList] = useState(isInWishList);
+  const [isCartLoading, setIsCartLoading] = useState(false);
+  const [isWishListLoading, setIsWishlistLoading] = useState(false);
   const [alert, setAlert] = useState({
     title: "",
     body: "",
@@ -86,6 +88,7 @@ function Product({ product, isInWishList }) {
       router.push("/auth/login");
     } else {
       try {
+        setIsWishlistLoading(true);
         const body = JSON.stringify({ id: product.id });
         const res = await fetch("/api/shop/toggle_product_to_wishlist", {
           method: "POST",
@@ -96,6 +99,8 @@ function Product({ product, isInWishList }) {
         });
         const data = await res.json();
         setIsInWishList((prevState) => !prevState);
+        setIsWishlistLoading(false);
+
         setAlert({
           title: "Success",
           body: data.success,
@@ -103,9 +108,47 @@ function Product({ product, isInWishList }) {
           success: true,
         });
       } catch (error) {
+        setIsWishlistLoading(false);
+
         setAlert({
           title: "Failed to modify the wishlist",
           body: error,
+          show: true,
+          success: false,
+        });
+      }
+    }
+  };
+
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      router.push("/auth/login");
+    } else {
+      try {
+        setIsCartLoading(true);
+        const body = JSON.stringify({ id: product.id });
+        const res = await fetch("/api/shop/add_to_cart", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+          },
+          body: body,
+        });
+        const data = await res.json();
+        setIsCartLoading(false);
+
+        setAlert({
+          title: "Success",
+          body: data.success,
+          show: true,
+          success: true,
+        });
+      } catch (error) {
+        setIsCartLoading(false);
+
+        setAlert({
+          title: "Failed to modify the cart",
+          body: "",
           show: true,
           success: false,
         });
@@ -226,7 +269,7 @@ function Product({ product, isInWishList }) {
             >
               {product.product_image.map((image) => (
                 <ImageContainer
-                  id={image.image}
+                  key={image.image}
                   isActive={selectedImage == image.image}
                   onMouseEnter={() => {
                     setSelectedImage(image.image);
@@ -252,7 +295,7 @@ function Product({ product, isInWishList }) {
               }}
             >
               {product.productSpecificationValue.map((spec) => (
-                <div className="d-flex">
+                <div key={spec.id} className="d-flex">
                   <small className="text-muted">
                     {spec.specification.name}:
                   </small>
@@ -277,23 +320,47 @@ function Product({ product, isInWishList }) {
                 paddingBottom: 10,
               }}
             >
-              <CartButton>
-                <ShoppingCart
-                  style={{ marginRight: "10px" }}
-                  size={16}
-                  color={colors.white}
-                />
-                Move to cart
-              </CartButton>
-              <WishlistButton onClick={toggleWishlist}>
-                <Heart
-                  style={{ marginRight: "10px" }}
-                  size={16}
-                  color={IsInWishList ? colors.danger : colors.greyDark}
-                  fill={IsInWishList ? colors.danger : "transparent"}
-                />
-                {IsInWishList ? "Remove from Wishlist" : "Add to wishlist"}
-              </WishlistButton>
+              {isCartLoading ? (
+                <CartButton>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="lg"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                </CartButton>
+              ) : (
+                <CartButton onClick={handleAddToCart}>
+                  <ShoppingCart
+                    style={{ marginRight: "10px" }}
+                    size={16}
+                    color={colors.white}
+                  />
+                  Move to cart
+                </CartButton>
+              )}
+              {isWishListLoading ? (
+                <WishlistButton>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="lg"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                </WishlistButton>
+              ) : (
+                <WishlistButton onClick={toggleWishlist}>
+                  <Heart
+                    style={{ marginRight: "10px" }}
+                    size={16}
+                    color={IsInWishList ? colors.danger : colors.greyDark}
+                    fill={IsInWishList ? colors.danger : "transparent"}
+                  />
+                  {IsInWishList ? "Remove from Wishlist" : "Add to wishlist"}
+                </WishlistButton>
+              )}
             </div>
           </Col>
         </Row>

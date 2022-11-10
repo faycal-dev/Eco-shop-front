@@ -88,14 +88,18 @@ export const CardWishlistButton = styled.div`
   flex-direction: row;
   color: ${colors.dark};
   background-color: ${colors.greyFade2};
-  width: 40%;
+  width: 100%;
+  height: 100%;
   border-width: 0;
   cursor: pointer;
-
 
   &:hover {
     opacity: 80%;
   }
+`;
+
+export const WishlistButtonContainer = styled.div`
+  width: 40%;
 `;
 
 export const LinkText = styled.p`

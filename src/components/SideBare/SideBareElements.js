@@ -25,7 +25,7 @@ export const Icon = styled.div`
   font-size: 2rem;
   cursor: pointer;
 
-  &:hover{
+  &:hover {
     transform: scale(1.1);
   }
 `;
@@ -43,7 +43,6 @@ export const SideBarMenu = styled.ul`
   grid-template-columns: 1fr;
   grid-template-rows: repeat(6, 80px);
   text-align: center;
-
 
   @media screen and (max-width: 480px) {
     grid-template-rows: repeat(6, 60);
@@ -73,7 +72,8 @@ export const SideBtnWrap = styled.div`
 `;
 export const SideBarRoute = styled.a`
   border-radius: 50px;
-  background: rgba(230, 72, 72);
+  background: ${({ isAuthenticated }) =>
+    isAuthenticated ? colors.danger : colors.primary2};
   white-space: nowrap;
   padding: 10px 25px;
   color: ${colors.white};

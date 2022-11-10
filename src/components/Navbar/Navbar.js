@@ -2,10 +2,9 @@ import {
   List,
   Heart,
   ShoppingCart,
-  CreditCard,
   ShoppingBag,
-  Bell,
   Clock,
+  User,
 } from "react-feather";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
@@ -89,20 +88,22 @@ const Navbar = ({ toggle }) => {
               </Link>
             </NavItem>
             <NavItem>
-              <Link href="/notifications">
-                <NavLinks isActive={router.pathname === "/notifications"}>
-                  <Bell size={20} style={{ marginRight: 5 }} />
-                  Notifications
-                </NavLinks>
-              </Link>
-            </NavItem>
-            <NavItem>
               <Link href="/orders">
                 <NavLinks isActive={router.pathname === "/orders"}>
                   <Clock size={20} style={{ marginRight: 5 }} /> Orders
                 </NavLinks>
               </Link>
             </NavItem>
+            {isAuthenticated && (
+              <NavItem>
+                <Link href="/user">
+                  <NavLinks isActive={router.pathname === "/user"}>
+                    <User size={20} style={{ marginRight: 5 }} />
+                    Profile
+                  </NavLinks>
+                </Link>
+              </NavItem>
+            )}
 
             {/* <DropDownContainer>
               <DropDownHeader onClick={toggling}>
