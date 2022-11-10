@@ -43,7 +43,7 @@ const Navbar = ({ toggle }) => {
   };
 
   const loginHandler = () => {
-    router.push("auth/login");
+    router.push("/auth/login");
   };
 
   // const toggling = () => setIsOpen(!isOpen);
