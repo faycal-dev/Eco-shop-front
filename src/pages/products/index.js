@@ -346,7 +346,7 @@ export default function Index({ products, pagination }) {
 
   // in case you want to secure the shop page by giving access to only authenticated users
   //   if (typeof window !== "undefined" && !loading && !isAuthenticated) {
-  //     router.push("auth/login");
+  //     router.push("/auth/login");
   //   }
 
   return (

@@ -34,7 +34,7 @@ function ProductCard({
       <CardImage
         onClick={() => {
           router.push({
-            pathname: `products/${encodeURIComponent(product.slug)}`,
+            pathname: `/products/${encodeURIComponent(product.slug)}`,
             query: { isInWishList },
           });
         }}
@@ -49,7 +49,7 @@ function ProductCard({
       <CardPriceWrapper
         onClick={() => {
           router.push({
-            pathname: `products/${encodeURIComponent(product.slug)}`,
+            pathname: `/products/${encodeURIComponent(product.slug)}`,
             query: { isInWishList },
           });
         }}
@@ -68,7 +68,7 @@ function ProductCard({
       <CardTitleWrapper
         onClick={() => {
           router.push({
-            pathname: `products/${encodeURIComponent(product.slug)}`,
+            pathname: `/products/${encodeURIComponent(product.slug)}`,
             query: { isInWishList },
           });
         }}
